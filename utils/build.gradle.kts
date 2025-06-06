@@ -29,8 +29,6 @@ kotlin {
     jvm("desktop")
 
     sourceSets {
-        val desktopMain by getting
-
         commonMain.dependencies {
             implementation(libs.kotlin.stdlib)
             implementation(compose.runtime)
@@ -40,8 +38,9 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.constraintlayout.compose.multiplatform)
             implementation(compose.materialIconsExtended)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.serialization.json)
         }
-
         androidMain.dependencies {
             implementation(libs.androidx.adaptive.android)
             implementation(libs.androidx.activity.ktx)
@@ -54,14 +53,6 @@ kotlin {
             implementation(libs.androidx.adaptive.android)
             implementation(libs.datastore.preferences)
             implementation(libs.datastore.core)
-        }
-
-        iosMain.dependencies {
-            // nothing
-        }
-
-        desktopMain.dependencies {
-            // nothing
         }
     }
 }

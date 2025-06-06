@@ -121,10 +121,10 @@ actual fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
 @SuppressLint("ComposableNaming")
 @Composable
 actual fun ToggleNavScrimEffect(enabled: Boolean) {
-    val context = (LocalContext() as Activity)
+    val context = LocalContext()
     LaunchedEffect(enabled) {
         runCatching {
-            val window = context.window
+            val window = (context as Activity).window
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 window.isNavigationBarContrastEnforced = enabled
             }
@@ -627,30 +627,7 @@ class NotificationIdManager(vararg reservedIds: Int) {
     }
 }
 
-@Composable
-fun PaddingValues.copy(
-    start: Dp? = null,
-    end: Dp? = null,
-    top: Dp? = null,
-    bottom: Dp? = null
-) = PaddingValues(
-    start = start ?: calculateStartPadding(LocalLayoutDirection.current),
-    end = end ?: calculateEndPadding(LocalLayoutDirection.current),
-    top = top ?: calculateTopPadding(),
-    bottom = bottom ?: calculateBottomPadding()
-)
 
-@Suppress("unused")
-@Composable
-fun PaddingValues.copy(
-    horizontal: Dp? = null,
-    vertical: Dp? = null
-) = copy(
-    start = horizontal,
-    end = horizontal,
-    top = vertical,
-    bottom = vertical
-)
 
 inline fun InputStream.test() =
     try {

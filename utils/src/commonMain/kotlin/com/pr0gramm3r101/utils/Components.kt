@@ -20,9 +20,9 @@ data class NavigationItem(
 
 @Composable
 fun SimpleNavigationBar(
+    modifier: Modifier = Modifier,
     selectedItem: Int,
     vararg items: NavigationItem,
-    modifier: Modifier = Modifier,
 ) {
     NavigationBar(modifier) {
         items.forEachIndexed { index, item ->
@@ -47,9 +47,9 @@ fun SimpleNavigationBar(
 
 @Composable
 fun SimpleNavigationRail(
-    selectedItem: Int,
-    vararg items: NavigationItem,
     modifier: Modifier = Modifier,
+    selectedItem: Int,
+    vararg items: NavigationItem
 ) {
     NavigationRail(
         modifier,

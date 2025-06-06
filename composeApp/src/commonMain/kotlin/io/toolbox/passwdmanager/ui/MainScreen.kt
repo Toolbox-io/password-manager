@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package io.toolbox.passwdmanager.ui
 
 import androidx.compose.foundation.layout.fillMaxSize

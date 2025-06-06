@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -123,7 +124,6 @@ fun SettingsTab() {
                         }
                     )
 
-
                     // Theme
                     ListItem(
                         headline = stringResource(Res.string.theme),
@@ -171,6 +171,18 @@ fun SettingsTab() {
                                     )
                                 }
                             }
+                        }
+                    )
+
+                    // File API Test
+                    ListItem(
+                        headline = "File API Test",
+                        onClick = { navController.navigate("file-api-test") },
+                        leadingContent = {
+                            Icon(
+                                imageVector = Icons.Filled.Storage,
+                                contentDescription = null
+                            )
                         }
                     )
                 }

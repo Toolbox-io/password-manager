@@ -85,13 +85,13 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.constraintlayout.compose.Dimension
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import com.pr0gramm3r101.utils.invoke
 import com.pr0gramm3r101.utils.left
 import com.pr0gramm3r101.utils.link
 import com.pr0gramm3r101.utils.plus
 import com.pr0gramm3r101.utils.right
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 @Composable
@@ -1053,16 +1053,18 @@ inline fun SwipeToDismissBackground(
 }
 
 object CategoryDefaults {
-    val margin = PaddingValues(start = 16.dp, end = 16.dp, bottom = 20.dp)
+    val padding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 20.dp)
     val dividerColor @Composable get() = MaterialTheme.colorScheme.surface
     val dividerThickness: Dp = 2.dp
+    val shape @Composable get() = MaterialTheme.shapes.extraLarge
 }
 
 @Composable
 inline fun ColumnScope.Category(
     modifier: Modifier = Modifier,
     title: String? = null,
-    margin: PaddingValues = CategoryDefaults.margin,
+    padding: PaddingValues = CategoryDefaults.padding,
+    shape: Shape = CategoryDefaults.shape,
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     noinline content: @Composable ColumnScope.() -> Unit
 ) {
@@ -1076,9 +1078,9 @@ inline fun ColumnScope.Category(
     }
     Card(
         modifier = modifier
-            .padding(margin)
+            .padding(padding)
             .fillMaxWidth(),
-        shape = MaterialTheme.shapes.extraLarge,
+        shape = shape,
         colors = cardColors(containerColor = containerColor),
         content = content
     )

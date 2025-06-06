@@ -14,12 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.pr0gramm3r101.components.Category
+import com.pr0gramm3r101.components.CategoryDefaults
+import com.pr0gramm3r101.components.ListItem
+import com.pr0gramm3r101.utils.copy
 import io.toolbox.passwdmanager.Res
 import io.toolbox.passwdmanager.home
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@Preview
 fun HomeTab() {
     TabBase {
         val scrollBehavior =
@@ -45,8 +52,21 @@ fun HomeTab() {
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
             ) {
-                // TODO Home tab content
-                Text("Home tab content goes here")
+                @Composable
+                fun PasswordCard(login: String, password: String) {
+                    Category(padding = CategoryDefaults.padding.copy(vertical = 5.dp)) {
+                        ListItem(
+                            headline = login,
+                            supportingText = password
+                        )
+                    }
+                }
+
+                PasswordCard("test@gmail.com", "test123")
+                PasswordCard("test@gmail.com", "test123")
+                PasswordCard("test@gmail.com", "test123")
+                PasswordCard("test@gmail.com", "test123")
+                PasswordCard("test@gmail.com", "test123")
             }
         }
     }
