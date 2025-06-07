@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -16,7 +14,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Wallpaper
-import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -37,10 +34,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.stringResource
 import com.pr0gramm3r101.components.Category
 import com.pr0gramm3r101.components.ListItem
 import com.pr0gramm3r101.components.SwitchListItem
+import com.pr0gramm3r101.utils.invoke
 import com.pr0gramm3r101.utils.materialYouAvailable
 import io.toolbox.passwdmanager.Res
 import io.toolbox.passwdmanager.Settings
@@ -57,7 +54,7 @@ import io.toolbox.passwdmanager.ui.LocalNavController
 import io.toolbox.passwdmanager.ui.Theme
 import io.toolbox.passwdmanager.ui.dynamicThemeEnabled
 import io.toolbox.passwdmanager.ui.theme
-import com.pr0gramm3r101.utils.invoke
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -153,9 +150,6 @@ fun SettingsTab() {
                                         },
                                         selected = index == selectedIndex,
                                         leadingIcon = {
-                                            if (index == 0) {
-                                                Spacer(Modifier.width(16.dp))
-                                            }
                                             when (index) {
                                                 0 -> Icon(Icons.Filled.Settings, null)
                                                 1 -> Icon(Icons.Filled.LightMode, null)
@@ -171,18 +165,6 @@ fun SettingsTab() {
                                     )
                                 }
                             }
-                        }
-                    )
-
-                    // File API Test
-                    ListItem(
-                        headline = "File API Test",
-                        onClick = { navController.navigate("file-api-test") },
-                        leadingContent = {
-                            Icon(
-                                imageVector = Icons.Filled.Storage,
-                                contentDescription = null
-                            )
                         }
                     )
                 }
