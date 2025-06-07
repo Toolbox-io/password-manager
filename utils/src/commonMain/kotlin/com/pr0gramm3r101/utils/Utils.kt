@@ -1,9 +1,12 @@
 @file:Suppress("UnusedReceiverParameter", "unused", "NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
 package com.pr0gramm3r101.utils
 
+import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
@@ -214,3 +217,10 @@ inline fun assert(condition: Boolean, lazyMessage: () -> String = { "Assertion f
         throw AssertionError(lazyMessage())
     }
 }
+
+@Composable
+inline fun Modifier.verticalScroll(
+    enabled: Boolean = true,
+    flingBehavior: FlingBehavior? = null,
+    reverseScrolling: Boolean = false
+) = verticalScroll(rememberScrollState(), enabled, flingBehavior, reverseScrolling)

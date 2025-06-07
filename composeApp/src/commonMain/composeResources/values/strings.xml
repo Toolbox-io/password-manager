@@ -10,4 +10,6 @@
     <string name="as_system">As system</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
+    <string name="showpw">Show password</string>
+    <string name="hidepw">Hide password</string>
 </resources>
