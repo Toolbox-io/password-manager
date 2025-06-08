@@ -71,14 +71,12 @@ internal inline fun MainScreen() {
                 }
             }
 
-            val onClick: (Int) -> (() -> Unit) = {
-                {
-                    selectedItem = it
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(it)
-                    }
+            val onClick: (Int) -> (() -> Unit) = {{
+                selectedItem = it
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(it)
                 }
-            }
+            }}
 
             val navItems = arrayOf(
                 NavigationItem(
@@ -98,7 +96,7 @@ internal inline fun MainScreen() {
             if (
                 currentWindowAdaptiveInfo().windowSizeClass.let {
                     it.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED ||
-                            it.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM
+                    it.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM
                 }
             ) {
                 VerticalPager(

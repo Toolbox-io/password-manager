@@ -91,6 +91,7 @@ val LocalSupportClipboardManager: ProvidableCompositionLocal<SupportClipboardMan
     throw IllegalStateException("This CompositionLocal hasn't been provided.")
 }
 
+// TODO migrate to Clipboard
 val supportClipboardManagerImpl
     @Composable get() = LocalClipboardManager().toSupport()
 
@@ -224,3 +225,17 @@ inline fun Modifier.verticalScroll(
     flingBehavior: FlingBehavior? = null,
     reverseScrolling: Boolean = false
 ) = verticalScroll(rememberScrollState(), enabled, flingBehavior, reverseScrolling)
+
+expect fun hasDisplayCutout(): Boolean
+
+interface Platform {
+    val model: String
+    val osName: String
+    val osVersion: String
+    val isTablet: Boolean
+    val isPhone: Boolean
+    val isDesktop: Boolean
+    val hasDisplayCutout: Boolean
+}
+
+expect val platform: Platform

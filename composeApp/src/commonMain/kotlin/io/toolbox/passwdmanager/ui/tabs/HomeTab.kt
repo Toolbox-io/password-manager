@@ -1,5 +1,6 @@
 package io.toolbox.passwdmanager.ui.tabs
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -11,7 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -20,6 +21,7 @@ import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -32,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,7 +45,10 @@ import androidx.compose.ui.unit.dp
 import com.pr0gramm3r101.components.Category
 import com.pr0gramm3r101.components.CategoryDefaults
 import com.pr0gramm3r101.components.ListItem
+import com.pr0gramm3r101.utils.AnimatedCrosslineIcon
+import com.pr0gramm3r101.utils.TweakedOutlinedTextField
 import com.pr0gramm3r101.utils.copy
+import com.pr0gramm3r101.utils.platform
 import com.pr0gramm3r101.utils.verticalScroll
 import io.toolbox.passwdmanager.Res
 import io.toolbox.passwdmanager.hidepw
@@ -81,7 +87,7 @@ fun HomeTab() {
                 MediumTopAppBar(
                     title = {
                         Text(
-                            stringResource(Res.string.home),
+                            text = stringResource(Res.string.home),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -93,9 +99,7 @@ fun HomeTab() {
                 ExtendedFloatingActionButton(
                     text = { Text("New") },
                     icon = { Icon(Icons.Filled.Add, contentDescription = "") },
-                    onClick = {
-                        showBottomSheet = true
-                    }
+                    onClick = { showBottomSheet = true }
                 )
             }
         ) { innerPadding ->
@@ -114,12 +118,26 @@ fun HomeTab() {
                     }
                 }
 
+                PasswordCard("test@gmail.com", "test123")
+                PasswordCard("test@gmail.com", "test123")
+                PasswordCard("test@gmail.com", "test123")
+                PasswordCard("test@gmail.com", "test123")
+                PasswordCard("test@gmail.com", "test123")
+
                 if (showBottomSheet) {
                     ModalBottomSheet(
                         onDismissRequest = {
                             showBottomSheet = false
                         },
-                        sheetState = sheetState
+                        sheetState = sheetState,
+                        dragHandle = {
+                            val alpha by animateFloatAsState(
+                                if ((platform.osName != "iOS") && sheetState.targetValue == SheetValue.Expanded) 0f
+                                else 1f
+                            )
+
+                            BottomSheetDefaults.DragHandle(Modifier.alpha(alpha))
+                        }
                     ) {
                         Scaffold(
                             topBar = {
@@ -173,7 +191,7 @@ fun HomeTab() {
                                     modifier = Modifier.width(300.dp)
                                 )
 
-                                OutlinedTextField(
+                                TweakedOutlinedTextField(
                                     value = password,
                                     onValueChange = { password = it },
                                     label = { Text("Password") },
@@ -188,17 +206,14 @@ fun HomeTab() {
                                                 passwordShown = !passwordShown
                                             }
                                         ) {
-                                            if (!passwordShown) {
-                                                Icon(
-                                                    Icons.Filled.Visibility,
-                                                    stringResource(Res.string.showpw)
-                                                )
-                                            } else {
-                                                Icon(
-                                                    Icons.Filled.VisibilityOff,
+                                            AnimatedCrosslineIcon(
+                                                icon = Icons.Filled.Visibility,
+                                                crossline = passwordShown,
+                                                contentDescription = if (passwordShown) 
                                                     stringResource(Res.string.hidepw)
-                                                )
-                                            }
+                                                else
+                                                    stringResource(Res.string.showpw)
+                                            )
                                         }
                                     },
                                     singleLine = true,
@@ -216,12 +231,6 @@ fun HomeTab() {
                         }
                     }
                 }
-
-                PasswordCard("test@gmail.com", "test123")
-                PasswordCard("test@gmail.com", "test123")
-                PasswordCard("test@gmail.com", "test123")
-                PasswordCard("test@gmail.com", "test123")
-                PasswordCard("test@gmail.com", "test123")
             }
         }
     }

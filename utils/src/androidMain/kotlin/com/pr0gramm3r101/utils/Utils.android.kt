@@ -49,10 +49,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -67,8 +64,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.Dp
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -807,3 +802,17 @@ inline fun String.decodeWindows1251() = String(
 
 @get:ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
 actual val materialYouAvailable get() = Build.VERSION.SDK_INT >= 31
+
+actual fun hasDisplayCutout(): Boolean = platform.hasDisplayCutout
+
+private class AndroidPlatform(private val context: Context) : Platform {
+    override val model get() = Build.MODEL!!
+    override val osName get() = "Android"
+    override val osVersion get() = Build.VERSION.RELEASE!!
+    override val isTablet get() = context.resources.configuration.screenLayout and android.content.res.Configuration.SCREENLAYOUT_SIZE_MASK >= android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE
+    override val isPhone get() = !isTablet
+    override val isDesktop get() = false
+    override val hasDisplayCutout get() = TODO("Not yet implemented")
+}
+
+actual val platform: Platform = AndroidPlatform(UtilsLibrary.context)
