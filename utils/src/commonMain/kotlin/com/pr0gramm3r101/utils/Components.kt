@@ -299,7 +299,8 @@ fun TweakedOutlinedTextField(
                     .defaultMinSize(
                         minWidth = OutlinedTextFieldDefaults.MinWidth,
                         minHeight = OutlinedTextFieldDefaults.MinHeight
-                    ),
+                    )
+                    .clearFocusOnKeyboardDismiss(),
             onValueChange = onValueChange,
             enabled = enabled,
             readOnly = readOnly,

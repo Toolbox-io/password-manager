@@ -45,6 +45,7 @@ import com.pr0gramm3r101.components.CategoryDefaults
 import com.pr0gramm3r101.components.ListItem
 import com.pr0gramm3r101.utils.AnimatedCrosslineIcon
 import com.pr0gramm3r101.utils.TweakedOutlinedTextField
+import com.pr0gramm3r101.utils.clearsFocus
 import com.pr0gramm3r101.utils.copy
 import com.pr0gramm3r101.utils.verticalScroll
 import io.toolbox.passwdmanager.Res
@@ -132,7 +133,8 @@ fun HomeTab() {
                             Modifier
                                 .padding(horizontal = 16.dp)
                                 .padding(top = 16.dp)
-                                .verticalScroll(),
+                                .verticalScroll()
+                                .clearsFocus(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             TopAppBar(

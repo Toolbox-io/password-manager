@@ -1,7 +1,9 @@
 @file:Suppress("UnusedReceiverParameter", "unused", "NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
 package com.pr0gramm3r101.utils
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.FlingBehavior
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -13,10 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.AnnotatedString
@@ -69,6 +74,18 @@ inline infix fun VerticalAnchorable.link(
 
 
 expect fun Modifier.clearFocusOnKeyboardDismiss(): Modifier
+
+fun Modifier.clearsFocus(): Modifier = composed {
+    val interactionSource = remember { MutableInteractionSource() }
+    val focusManager = LocalFocusManager.current
+    
+    this.clickable(
+        interactionSource = interactionSource,
+        indication = null
+    ) {
+        focusManager.clearFocus()
+    }
+}
 
 operator fun Modifier.plus(other: Modifier) = then(other)
 
