@@ -1,6 +1,5 @@
 package io.toolbox.passwdmanager.ui.tabs
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -10,9 +9,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -21,7 +20,6 @@ import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,8 +31,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
@@ -48,7 +46,6 @@ import com.pr0gramm3r101.components.ListItem
 import com.pr0gramm3r101.utils.AnimatedCrosslineIcon
 import com.pr0gramm3r101.utils.TweakedOutlinedTextField
 import com.pr0gramm3r101.utils.copy
-import com.pr0gramm3r101.utils.platform
 import com.pr0gramm3r101.utils.verticalScroll
 import io.toolbox.passwdmanager.Res
 import io.toolbox.passwdmanager.hidepw
@@ -129,105 +126,94 @@ fun HomeTab() {
                         onDismissRequest = {
                             showBottomSheet = false
                         },
-                        sheetState = sheetState,
-                        dragHandle = {
-                            val alpha by animateFloatAsState(
-                                if ((platform.osName != "iOS") && sheetState.targetValue == SheetValue.Expanded) 0f
-                                else 1f
+                        sheetState = sheetState
+                    ) {
+                        Column(
+                            Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(top = 16.dp)
+                                .verticalScroll(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            TopAppBar(
+                                title = {
+                                    Text(
+                                        text = "Add password",
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = Color.Transparent
+                                ),
+                                windowInsets = WindowInsets(0),
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = ::hideBottomSheet
+                                    ) {
+                                        Icon(Icons.Filled.Close, null)
+                                    }
+                                }
                             )
 
-                            BottomSheetDefaults.DragHandle(Modifier.alpha(alpha))
-                        }
-                    ) {
-                        Scaffold(
-                            topBar = {
-                                TopAppBar(
-                                    title = {
-                                        Text(
-                                            text = "Add password",
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
+                            var login by remember { mutableStateOf("") }
+                            var password by remember { mutableStateOf("") }
+                            var passwordShown by remember { mutableStateOf(false) }
+
+                            OutlinedTextField(
+                                value = login,
+                                onValueChange = { login = it },
+                                label = { Text("Login (optional)") },
+                                modifier = Modifier.width(300.dp)
+                            )
+
+                            TweakedOutlinedTextField(
+                                value = password,
+                                onValueChange = { password = it },
+                                label = { Text("Password") },
+                                visualTransformation =
+                                    if (passwordShown)
+                                        VisualTransformation.None
+                                    else PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                                trailingIcon = {
+                                    IconButton(
+                                        onClick = {
+                                            passwordShown = !passwordShown
+                                        }
+                                    ) {
+                                        AnimatedCrosslineIcon(
+                                            icon = Icons.Filled.Visibility,
+                                            crossline = passwordShown,
+                                            contentDescription = if (passwordShown)
+                                                stringResource(Res.string.hidepw)
+                                            else
+                                                stringResource(Res.string.showpw)
                                         )
-                                    },
-                                    colors = TopAppBarDefaults.topAppBarColors(
-                                        containerColor = Color.Transparent
-                                    ),
-                                    windowInsets = WindowInsets(0),
-                                    navigationIcon = {
-                                        IconButton(
-                                            onClick = ::hideBottomSheet
-                                        ) {
-                                            Icon(Icons.Filled.Close, null)
-                                        }
                                     }
-                                )
-                            },
-                            floatingActionButton = {
-                                ExtendedFloatingActionButton(
-                                    text = { Text("Done") },
-                                    icon = { Icon(Icons.Filled.Add, contentDescription = "") },
-                                    onClick = {
-                                        hideBottomSheet()
-                                    }
-                                )
-                            },
-                            containerColor = Color.Transparent
-                        ) { innerPadding ->
-                            Column(
-                                Modifier
-                                    .padding(innerPadding)
-                                    .padding(horizontal = 16.dp)
-                                    .padding(top = 16.dp)
-                                    .verticalScroll()
-                            ) {
-                                var login by remember { mutableStateOf("") }
-                                var password by remember { mutableStateOf("") }
-                                var passwordShown by remember { mutableStateOf(false) }
+                                },
+                                singleLine = true,
+                                modifier = Modifier.width(300.dp)
+                            )
 
-                                OutlinedTextField(
-                                    value = login,
-                                    onValueChange = { login = it },
-                                    label = { Text("Login (optional)") },
-                                    modifier = Modifier.width(300.dp)
-                                )
+                            // Add password strength meter
+                            PasswordStrengthMeter(
+                                password = password,
+                                modifier = Modifier
+                                    .padding(top = 8.dp)
+                                    .width(300.dp)
+                            )
 
-                                TweakedOutlinedTextField(
-                                    value = password,
-                                    onValueChange = { password = it },
-                                    label = { Text("Password") },
-                                    visualTransformation =
-                                        if (passwordShown)
-                                            VisualTransformation.None
-                                        else PasswordVisualTransformation(),
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                                    trailingIcon = {
-                                        IconButton(
-                                            onClick = {
-                                                passwordShown = !passwordShown
-                                            }
-                                        ) {
-                                            AnimatedCrosslineIcon(
-                                                icon = Icons.Filled.Visibility,
-                                                crossline = passwordShown,
-                                                contentDescription = if (passwordShown) 
-                                                    stringResource(Res.string.hidepw)
-                                                else
-                                                    stringResource(Res.string.showpw)
-                                            )
-                                        }
-                                    },
-                                    singleLine = true,
-                                    modifier = Modifier.width(300.dp)
-                                )
-
-                                // Add password strength meter
-                                PasswordStrengthMeter(
-                                    password = password,
-                                    modifier = Modifier
-                                        .padding(top = 8.dp)
-                                        .width(300.dp)
-                                )
-                            }
+                            ExtendedFloatingActionButton(
+                                onClick = {},
+                                icon = {
+                                    Icon(Icons.Filled.Check, null)
+                                },
+                                text = {
+                                    Text("Add")
+                                },
+                                modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+                            )
                         }
                     }
                 }

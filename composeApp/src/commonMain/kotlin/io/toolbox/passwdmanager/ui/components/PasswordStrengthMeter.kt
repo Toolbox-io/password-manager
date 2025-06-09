@@ -1,5 +1,6 @@
 package io.toolbox.passwdmanager.ui.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,10 +33,8 @@ fun PasswordStrengthMeter(
         PasswordStrength.calculateStrength(password)
     }
 
-    val progress by animateFloatAsState(
-        targetValue = strengthResult.score / 4f,
-        label = "strength_progress"
-    )
+    val progress by animateFloatAsState(strengthResult.score / 4f)
+    val color by animateColorAsState(Color(strengthResult.color))
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -54,11 +53,11 @@ fun PasswordStrengthMeter(
                     .fillMaxWidth(progress)
                     .fillMaxHeight()
                     .clip(RoundedCornerShape(4.dp))
-                    .background(Color(strengthResult.color))
+                    .background(color)
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(Modifier.height(8.dp))
 
         // Crack time estimate
         Text(
@@ -69,7 +68,7 @@ fun PasswordStrengthMeter(
 
         // Feedback messages
         if (strengthResult.feedback.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(Modifier.height(4.dp))
             strengthResult.feedback.forEach { feedback ->
                 Text(
                     text = feedback,

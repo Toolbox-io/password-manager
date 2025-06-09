@@ -56,3 +56,4 @@ xcuserdata
 
 # Sensitive content
 composeApp/src/commonTest/kotlin/io/toolbox/passwdmanager/utils/PasswordStrengthTest.kt
+keys
