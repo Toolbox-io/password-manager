@@ -33,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
@@ -53,6 +54,7 @@ import io.toolbox.passwdmanager.hidepw
 import io.toolbox.passwdmanager.home
 import io.toolbox.passwdmanager.showpw
 import io.toolbox.passwdmanager.ui.components.PasswordStrengthMeter
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -195,7 +197,17 @@ fun HomeTab() {
                                     }
                                 },
                                 singleLine = true,
-                                modifier = Modifier.width(300.dp)
+                                modifier = Modifier
+                                    .width(300.dp)
+                                    .onFocusChanged {
+                                        if (it.hasFocus) {
+                                            scope.launch {
+                                                delay(500)
+                                                sheetState.expand()
+                                            }
+                                        }
+                                    },
+                                isError = password.isBlank() || ' ' in password
                             )
 
                             // Add password strength meter
@@ -214,7 +226,10 @@ fun HomeTab() {
                                 text = {
                                     Text("Add")
                                 },
-                                modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+                                expanded = !(password.isBlank() || ' ' in password),
+                                modifier = Modifier
+                                    .padding(top = 16.dp, bottom = 16.dp)
+                                    .align(Alignment.End)
                             )
                         }
                     }

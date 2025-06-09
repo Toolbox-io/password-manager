@@ -256,3 +256,12 @@ interface Platform {
 }
 
 expect val platform: Platform
+
+inline fun Modifier.applyIf(
+    condition: Boolean,
+    modifier: Modifier.(Boolean) -> Modifier
+) = if (condition) {
+    modifier(this, condition)
+} else {
+    this
+}
