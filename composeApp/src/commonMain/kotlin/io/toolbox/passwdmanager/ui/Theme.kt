@@ -28,9 +28,13 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import com.pr0gramm3r101.utils.LocalSupportClipboardManager
 import com.pr0gramm3r101.utils.ToggleNavScrimEffect
 import com.pr0gramm3r101.utils.Typography
+import com.pr0gramm3r101.utils.applyIf
 import com.pr0gramm3r101.utils.invoke
 import com.pr0gramm3r101.utils.plus
 import com.pr0gramm3r101.utils.supportClipboardManagerImpl
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import io.toolbox.passwdmanager.Res
 import io.toolbox.passwdmanager.Settings
 import io.toolbox.passwdmanager.roboto
@@ -69,6 +73,9 @@ var theme by mutableStateOf(
     runCatching { Settings.theme }.getOrNull() ?: Theme.AsSystem
 )
 
+
+val LocalHazeState = compositionLocalOf<HazeState> { error("not provided") }
+
 @Composable
 expect fun fixStatusBar(darkTheme: Boolean, asSystem: Boolean)
 
@@ -87,6 +94,8 @@ fun AppTheme(
     content: @Composable WindowInsetsScope.() -> Unit
 ) {
     var colorScheme = colorScheme(darkTheme)
+
+    var hazeState = rememberHazeState(true)
 
     val primary by animateColorAsState(colorScheme.primary)
     val onPrimary by animateColorAsState(colorScheme.onPrimary)
@@ -193,22 +202,26 @@ fun AppTheme(
                 ) {
                     Surface(
                         contentColor = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.let {
-                            var mod = it as Modifier
-                            if (consumeTopInsets) {
-                                mod += Modifier.consumeWindowInsets(WindowInsets.safeContent.only(WindowInsetsSides.Top))
+                        modifier = Modifier
+                            .applyIf(consumeTopInsets) {
+                                consumeWindowInsets(
+                                    WindowInsets.safeContent.only(WindowInsetsSides.Top)
+                                )
                             }
-                            if (consumeBottomInsets) {
-                                mod += Modifier.consumeWindowInsets(WindowInsets.safeContent.only(WindowInsetsSides.Bottom))
+                            .applyIf(consumeBottomInsets) {
+                                consumeWindowInsets(
+                                    WindowInsets.safeContent.only(WindowInsetsSides.Bottom)
+                                )
                             }
-                            if (!consumeLeftInsets) {
-                                mod += Modifier.consumeWindowInsets(WindowInsets.safeContent.only(WindowInsetsSides.Left))
+                            .applyIf(!consumeLeftInsets) {
+                                consumeWindowInsets(
+                                    WindowInsets.safeContent.only(WindowInsetsSides.Left)
+                                )
                             }
-                            if (!consumeRightInsets) {
-                                mod += Modifier.consumeWindowInsets(WindowInsets.safeContent.only(WindowInsetsSides.Right))
+                            .applyIf(!consumeRightInsets) {
+                                consumeWindowInsets(WindowInsets.safeContent.only(WindowInsetsSides.Right))
                             }
-                            mod
-                        }
+                            .hazeSource(hazeState)
                     ) {
                         val topInset = insets.getTop(LocalDensity())
                         val bottomInset = insets.getBottom(LocalDensity())
@@ -227,7 +240,10 @@ fun AppTheme(
                             override val rightInset get() = rightInset
                         }
 
-                        CompositionLocalProvider(LocalWindowInsetsScope provides scope) {
+                        CompositionLocalProvider(
+                            LocalWindowInsetsScope provides scope,
+                            LocalHazeState provides hazeState
+                        ) {
                             content(scope)
                         }
                     }

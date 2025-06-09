@@ -1,4 +1,3 @@
-
 import com.android.build.gradle.internal.tasks.AarMetadataReader.Companion.load
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -72,6 +71,8 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.haze)
+            implementation(libs.haze.materials)
 
             implementation(project(":utils"))
         }
