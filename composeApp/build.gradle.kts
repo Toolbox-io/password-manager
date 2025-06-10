@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    kotlin("plugin.serialization") version "2.1.21"
     idea
 }
 
@@ -73,6 +74,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.haze)
             implementation(libs.haze.materials)
+            implementation(libs.kotlinx.datetime)
 
             implementation(project(":utils"))
         }

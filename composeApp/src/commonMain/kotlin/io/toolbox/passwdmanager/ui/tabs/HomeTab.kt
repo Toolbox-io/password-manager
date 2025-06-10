@@ -6,18 +6,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -28,8 +32,11 @@ import com.pr0gramm3r101.components.CategoryDefaults
 import com.pr0gramm3r101.components.ListItem
 import com.pr0gramm3r101.utils.copy
 import io.toolbox.passwdmanager.Res
+import io.toolbox.passwdmanager.data.PasswordEntry
+import io.toolbox.passwdmanager.data.PasswordStorage
 import io.toolbox.passwdmanager.home
 import io.toolbox.passwdmanager.ui.components.AddPasswordDialog
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -42,6 +49,12 @@ fun HomeTab() {
             TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
         var showDialog by remember { mutableStateOf(false) }
+        var passwords by remember { mutableStateOf<List<PasswordEntry>>(emptyList()) }
+        val scope = rememberCoroutineScope()
+
+        LaunchedEffect(Unit) {
+            passwords = PasswordStorage.loadPasswords()
+        }
 
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -71,27 +84,40 @@ fun HomeTab() {
                     .verticalScroll(rememberScrollState())
             ) {
                 @Composable
-                fun PasswordCard(login: String, password: String) {
+                fun PasswordCard(entry: PasswordEntry) {
                     Category(padding = CategoryDefaults.padding.copy(vertical = 5.dp)) {
                         ListItem(
-                            headline = login,
-                            supportingText = password
+                            headline = entry.login.ifEmpty { "No login" },
+                            supportingText = entry.password,
+                            trailingContent = {
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            PasswordStorage.deletePassword(entry)
+                                            passwords = PasswordStorage.loadPasswords()
+                                        }
+                                    }
+                                ) {
+                                    Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                                }
+                            }
                         )
                     }
                 }
 
-                PasswordCard("test@gmail.com", "test123")
-                PasswordCard("test@gmail.com", "test123")
-                PasswordCard("test@gmail.com", "test123")
-                PasswordCard("test@gmail.com", "test123")
-                PasswordCard("test@gmail.com", "test123")
+                passwords.forEach { entry ->
+                    PasswordCard(entry)
+                }
 
                 if (showDialog) {
                     AddPasswordDialog(
                         onDismissRequest = { showDialog = false },
                         onAddPassword = { login, password ->
-                            // TODO: Handle adding password
-                            showDialog = false
+                            scope.launch {
+                                PasswordStorage.savePassword(PasswordEntry(login, password))
+                                passwords = PasswordStorage.loadPasswords()
+                                showDialog = false
+                            }
                         }
                     )
                 }

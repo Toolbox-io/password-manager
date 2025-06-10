@@ -2,7 +2,6 @@ package io.toolbox.passwdmanager.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -41,6 +40,7 @@ import androidx.compose.ui.window.Dialog
 import com.pr0gramm3r101.utils.AnimatedCrosslineIcon
 import com.pr0gramm3r101.utils.TweakedOutlinedTextField
 import com.pr0gramm3r101.utils.clearsFocus
+import com.pr0gramm3r101.utils.verticalScroll
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import io.toolbox.passwdmanager.Res
 import io.toolbox.passwdmanager.hidepw
@@ -55,12 +55,7 @@ fun AddPasswordDialog(
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(fraction = .5f),
-            // We can't use Haze tint with dialogs, as the tint will display a scrim over the
-            // background content. Instead we need to set a translucent background on the
-            // dialog content.
+            modifier = Modifier.fillMaxWidth(),
             color = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurface,
         ) {
@@ -73,7 +68,8 @@ fun AddPasswordDialog(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .padding(top = 16.dp)
-                        .clearsFocus(),
+                        .clearsFocus()
+                        .verticalScroll(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     TopAppBar(

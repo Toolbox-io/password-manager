@@ -40,7 +40,7 @@ class AndroidFile(
 
     override suspend fun readText(): String = withContext(Dispatchers.IO) {
         if (!file.exists()) {
-            throw FileNotFoundException("File not found: $path")
+            throw utils.FileNotFoundException("File not found: $path")
         }
         file.readText()
     }
