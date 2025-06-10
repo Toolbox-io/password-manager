@@ -2,7 +2,6 @@ package utils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.FileNotFoundException
 import java.io.File as JavaFile
 
 class DesktopFile(

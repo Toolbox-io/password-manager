@@ -2,10 +2,9 @@ package io.toolbox.passwdmanager.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -19,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -54,98 +52,92 @@ fun AddPasswordDialog(
     onAddPassword: (login: String, password: String) -> Unit
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            color = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onSurface,
+        Card(
+            shape = MaterialTheme.shapes.extraLarge,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+            modifier = Modifier.wrapContentSize()
         ) {
-            Card(
-                shape = MaterialTheme.shapes.extraLarge,
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-                modifier = Modifier.wrapContentHeight()
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp)
+                    .clearsFocus()
+                    .verticalScroll(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 16.dp)
-                        .clearsFocus()
-                        .verticalScroll(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = "Add password",
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Transparent
-                        ),
-                        windowInsets = WindowInsets(0),
-                        navigationIcon = {
-                            IconButton(onClick = onDismissRequest) {
-                                Icon(Icons.Filled.Close, null)
-                            }
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Add password",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
+                    ),
+                    windowInsets = WindowInsets(0),
+                    navigationIcon = {
+                        IconButton(onClick = onDismissRequest) {
+                            Icon(Icons.Filled.Close, null)
                         }
-                    )
+                    }
+                )
 
-                    var login by remember { mutableStateOf("") }
-                    var password by remember { mutableStateOf("") }
-                    var passwordShown by remember { mutableStateOf(false) }
+                var login by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
+                var passwordShown by remember { mutableStateOf(false) }
 
-                    OutlinedTextField(
-                        value = login,
-                        onValueChange = { login = it },
-                        label = { Text("Login (optional)") },
-                        modifier = Modifier.width(300.dp)
-                    )
+                OutlinedTextField(
+                    value = login,
+                    onValueChange = { login = it },
+                    label = { Text("Login (optional)") },
+                    modifier = Modifier.width(300.dp)
+                )
 
-                    TweakedOutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Password") },
-                        visualTransformation = if (passwordShown)
-                            VisualTransformation.None
-                        else PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        trailingIcon = {
-                            IconButton(
-                                onClick = { passwordShown = !passwordShown }
-                            ) {
-                                AnimatedCrosslineIcon(
-                                    icon = Icons.Filled.Visibility,
-                                    crossline = passwordShown,
-                                    contentDescription = if (passwordShown)
-                                        stringResource(Res.string.hidepw)
-                                    else
-                                        stringResource(Res.string.showpw)
-                                )
-                            }
-                        },
-                        singleLine = true,
-                        modifier = Modifier.width(300.dp),
-                        isError = password.isBlank() || ' ' in password
-                    )
+                TweakedOutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password") },
+                    visualTransformation = if (passwordShown)
+                        VisualTransformation.None
+                    else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    trailingIcon = {
+                        IconButton(
+                            onClick = { passwordShown = !passwordShown }
+                        ) {
+                            AnimatedCrosslineIcon(
+                                icon = Icons.Filled.Visibility,
+                                crossline = passwordShown,
+                                contentDescription = if (passwordShown)
+                                    stringResource(Res.string.hidepw)
+                                else
+                                    stringResource(Res.string.showpw)
+                            )
+                        }
+                    },
+                    singleLine = true,
+                    modifier = Modifier.width(300.dp),
+                    isError = password.isBlank() || ' ' in password
+                )
 
-                    PasswordStrengthMeter(
-                        password = password,
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .width(300.dp)
-                    )
+                PasswordStrengthMeter(
+                    password = password,
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .width(300.dp)
+                )
 
-                    ExtendedFloatingActionButton(
-                        onClick = { onAddPassword(login, password) },
-                        icon = { Icon(Icons.Filled.Check, null) },
-                        text = { Text("Add") },
-                        expanded = !(password.isBlank() || ' ' in password),
-                        modifier = Modifier
-                            .padding(top = 16.dp, bottom = 16.dp)
-                            .align(Alignment.End)
-                    )
-                }
+                ExtendedFloatingActionButton(
+                    onClick = { onAddPassword(login, password) },
+                    icon = { Icon(Icons.Filled.Check, null) },
+                    text = { Text("Add") },
+                    expanded = !(password.isBlank() || ' ' in password),
+                    modifier = Modifier
+                        .padding(top = 16.dp, bottom = 16.dp)
+                        .align(Alignment.End)
+                )
             }
         }
     }

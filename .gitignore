@@ -32,10 +32,6 @@ output-metadata.json
 .idea/modules
 .idea/artifacts
 
-# Keystore files
-*.jks
-*.keystore
-
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
@@ -56,4 +52,5 @@ xcuserdata
 
 # Sensitive content
 composeApp/src/commonTest/kotlin/io/toolbox/passwdmanager/utils/PasswordStrengthTest.kt
-keys
+keys/keystore.properties
+iosInputs/ExportOptions.plist

@@ -17,7 +17,6 @@ kotlinxDatetime = "0.6.2"
 kotlinxCoroutinesCore = "1.10.2"
 kotlinxIoCore = "0.7.0"
 kotlinxSerializationJson = "1.8.1"
-kotlinxSerialization = "1.8.1"
 ktorVersion = "2.3.7"
 material = "1.12.0"
 activityKtx = "1.10.1"
@@ -65,4 +64,3 @@ composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMul
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
-kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }

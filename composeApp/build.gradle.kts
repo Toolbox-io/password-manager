@@ -161,6 +161,10 @@ compose.desktop {
             packageName = "io.toolbox.passwdmanager"
             packageVersion = "1.0.0"
         }
+
+        buildTypes.release.proguard {
+            configurationFiles.from(project.file("desktop-rules.pro"))
+        }
     }
 }
 
