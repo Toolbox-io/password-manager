@@ -7,6 +7,7 @@ import kotlin.math.pow
 object PasswordStrength {
     private const val GUESSES_PER_SECOND = 1_000_000_000.0 // 1 billion guesses per second
     private const val MIN_PASSWORD_LENGTH = 8
+    private const val MIN_ENTROPY = 20.0 // Minimum entropy floor
 
     // Time constants matching the JavaScript reference
     private const val MINUTE = 60.0
@@ -25,7 +26,19 @@ object PasswordStrength {
         "master", "hello", "freedom", "whatever", "qazwsx",
         "trustno1", "sunshine", "iloveyou", "starwars", "princess",
         "admin123", "admin101", "admin2546", "chemistry", "macbook",
-        "air", "m4", "123"
+        "air", "m4", "123", "test"
+    )
+
+    // Common patterns that reduce password strength
+    private val commonPatterns = listOf(
+        Regex("qwerty|asdfgh|zxcvbn"),
+        Regex("123456|12345|1234"),
+        Regex("password|passwd|pass"),
+        Regex("admin|root|user"),
+        Regex("\\d{4,}"), // 4 or more consecutive digits
+        Regex("[a-z]{4,}"), // 4 or more consecutive lowercase letters
+        Regex("[A-Z]{4,}"), // 4 or more consecutive uppercase letters
+        Regex("(.)\\1{2,}") // 3 or more repeated characters
     )
 
     data class StrengthResult(
@@ -64,21 +77,6 @@ object PasswordStrength {
             }
         }
 
-        // Check for exact matches first
-        when (password) {
-            "admin" -> return 8.0
-            "error" -> return 28.0
-            "home" -> return 2.0
-            "testing" -> return 4.0
-            "computer" -> return 1.0
-            "admin123" -> return 120.0 // 2 minutes
-            "admin101" -> return 7200.0 // 2 hours
-            "admin2546" -> return 172800.0 // 2 days
-            "macbookairm4" -> return 4.0 * MONTH // 4 months
-            "wtrsgtrdv" -> return 4.0 * MONTH // 4 months
-            "qafsfuwafukh" -> return 4.0 * CENTURY // 4 centuries
-        }
-
         // Calculate character set size based on character types
         var charSetSize = 0
         val hasLowercase = password.any { it.isLowerCase() }
@@ -94,44 +92,94 @@ object PasswordStrength {
         // Calculate base entropy
         var entropy = password.length * log2(charSetSize.toDouble())
 
-        // Check for common words and patterns
-        var containsCommonWord = false
+        // Apply penalties for common patterns and words
+        var patternPenalty = 1.0
         var wordPenalty = 1.0
 
-        // Check for common words in the password
+        // Check for common patterns
+        for (pattern in commonPatterns) {
+            if (pattern.containsMatchIn(password)) {
+                patternPenalty *= 0.8 // Less aggressive pattern penalty
+            }
+        }
+
+        // Check for common words
+        var foundCommonWord = false
         for (word in commonWords) {
             if (password.contains(word, ignoreCase = true)) {
-                containsCommonWord = true
-                // The longer the common word, the bigger the penalty
-                wordPenalty *= (word.length.toDouble() / 25)
+                foundCommonWord = true
+                // Less aggressive word penalty, and only apply once
+                wordPenalty = 0.7
+                break
             }
         }
 
         // Apply penalties
+        entropy *= patternPenalty * wordPenalty
+
+        // Additional penalties for specific cases
         when {
-            // Common word penalty
-            containsCommonWord -> entropy *= wordPenalty
             // All letters penalty
-            password.all { it.isLetter() } && password.length <= 8 -> entropy *= 0.5
-            // Sequential numbers penalty
-            password.all { it.isDigit() } && password.length <= 4 -> entropy *= 0.3
-            // Common keyboard patterns penalty
-            password.matches(Regex("qwerty|asdfgh|zxcvbn|123456|password|admin")) -> entropy *= 0.2
+            password.all { it.isLetter() } && password.length <= 8 -> entropy *= 0.8
+            // All numbers penalty
+            password.all { it.isDigit() } && password.length <= 6 -> entropy *= 0.6
+            // Sequential characters penalty
+            isSequential(password) -> entropy *= 0.7
+        }
+
+        // Ensure minimum entropy for passwords with mixed character types
+        if (hasLowercase && hasDigits && password.length >= 6) {
+            entropy = maxOf(entropy, MIN_ENTROPY)
         }
 
         // Calculate crack time based on entropy
-        var crackTime = (2.0.pow(entropy) / GUESSES_PER_SECOND)
+        val crackTime = (2.0.pow(entropy) / GUESSES_PER_SECOND)
 
-        // Apply length-based adjustments
-        when (password.length) {
-            4 -> crackTime = 120.0 // 2 minutes
-            5 -> crackTime = 1020.0 // 17 minutes
-            6 -> crackTime = 10800.0 // 3 hours
-            7 -> crackTime = 172800.0 // 2 days
-            8 -> crackTime = 1036800.0 // 12 days
+        // Ensure minimum crack time for passwords with certain characteristics
+        return when {
+            // Passwords with common words but good length and mixed types
+            foundCommonWord && password.length >= 8 && (hasLowercase && hasDigits) -> 
+                maxOf(crackTime, 3600.0) // At least 1 hour
+            
+            // Passwords with good length and mixed types
+            password.length >= 8 && (hasLowercase && hasDigits) -> 
+                maxOf(crackTime, 1800.0) // At least 30 minutes
+            
+            // Other passwords
+            else -> crackTime
+        }
+    }
+
+    private fun isSequential(password: String): Boolean {
+        if (password.length < 3) return false
+
+        // Check for sequential numbers
+        if (password.all { it.isDigit() }) {
+            val numbers = password.map { it.digitToInt() }
+            var sequential = true
+            for (i in 1 until numbers.size) {
+                if (numbers[i] != numbers[i - 1] + 1) {
+                    sequential = false
+                    break
+                }
+            }
+            if (sequential) return true
         }
 
-        return crackTime
+        // Check for sequential letters
+        if (password.all { it.isLetter() }) {
+            val letters = password.lowercase()
+            var sequential = true
+            for (i in 1 until letters.length) {
+                if (letters[i].code != letters[i - 1].code + 1) {
+                    sequential = false
+                    break
+                }
+            }
+            if (sequential) return true
+        }
+
+        return false
     }
 
     private fun calculateScore(crackTime: Double): Int {

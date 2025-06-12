@@ -1,14 +1,18 @@
 package io.toolbox.passwdmanager.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,7 +39,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.pr0gramm3r101.components.Button
 import com.pr0gramm3r101.utils.AnimatedCrosslineIcon
+import com.pr0gramm3r101.utils.PasswordUtils
 import com.pr0gramm3r101.utils.TweakedOutlinedTextField
 import com.pr0gramm3r101.utils.clearsFocus
 import com.pr0gramm3r101.utils.verticalScroll
@@ -121,6 +127,33 @@ fun AddPasswordDialog(
                     modifier = Modifier.width(300.dp),
                     isError = password.isBlank() || ' ' in password
                 )
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .width(300.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            password = PasswordUtils.improvePassword(password)
+                        },
+                        icon = {
+                            Icon(Icons.Filled.AutoFixHigh, null)
+                        },
+                        enabled = password.isNotBlank() && password.length < 12,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Improve")
+                    }
+                    Button(
+                        onClick = { password = PasswordUtils.generateStrongPassword() },
+                        icon = { Icon(Icons.Filled.Refresh, null) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Generate")
+                    }
+                }
 
                 PasswordStrengthMeter(
                     password = password,
