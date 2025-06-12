@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.savedstate.read
 import io.toolbox.passwdmanager.data.PasswordStorage
 import io.toolbox.passwdmanager.ui.screens.AboutScreen
 import io.toolbox.passwdmanager.ui.screens.MainScreen
@@ -43,7 +44,11 @@ fun App() {
                         navArgument("index") { type = NavType.IntType }
                     )
                 ) { backStackEntry ->
-                    PasswordDetailsScreen(PasswordStorage.passwords[backStackEntry.arguments!!.getInt("index")])
+                    PasswordDetailsScreen(
+                        PasswordStorage.passwords[
+                            backStackEntry.arguments!!.read { getInt("index") }
+                        ]
+                    )
                 }
             }
         }

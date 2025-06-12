@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -14,6 +16,20 @@ kotlin {
         namespace = "com.pr0gramm3r101.utils"
         compileSdk = 35
         minSdk = 24
+
+        compilations.all {
+            @Suppress("DEPRECATION")
+            compilerOptions.configure {
+                jvmTarget.set(JvmTarget.JVM_11)
+            }
+        }
+    }
+
+    jvm("desktop") {
+        compilations.all {
+            @Suppress("DEPRECATION")
+            kotlinOptions.jvmTarget = "11"
+        }
     }
 
     listOf(
@@ -25,8 +41,6 @@ kotlin {
             baseName = "utils"
         }
     }
-
-    jvm("desktop")
 
     sourceSets {
         commonMain.dependencies {

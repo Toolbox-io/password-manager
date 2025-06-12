@@ -97,6 +97,11 @@ android {
     namespace = "io.toolbox.passwdmanager"
     compileSdk = 36
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
     defaultConfig {
         applicationId = "io.toolbox.passwdmanager"
         minSdk = 24
@@ -184,3 +189,4 @@ tasks.create("generateResourceAccessors") {
         )
     )
 }
+
