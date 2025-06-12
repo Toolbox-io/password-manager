@@ -98,7 +98,7 @@ fun PasswordStrengthMeter(
                 Column {
                     ConstraintLayout(
                         modifier = Modifier
-                            .padding(8.dp, 4.dp, 4.dp, 4.dp)
+                            .padding(16.dp, 4.dp, 4.dp, 4.dp)
                             .fillMaxWidth()
                     ) {
                         val (icon, text, expand) = createRefs()

@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package io.toolbox.passwdmanager.ui
+package io.toolbox.passwdmanager.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -35,6 +35,7 @@ import io.toolbox.passwdmanager.about
 import io.toolbox.passwdmanager.app_desc
 import io.toolbox.passwdmanager.app_icon
 import io.toolbox.passwdmanager.back
+import io.toolbox.passwdmanager.ui.LocalNavController
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -84,8 +85,7 @@ internal inline fun AboutScreen() {
                     )
                 }
                 Text(
-                    // TODO Adjust the name
-                    text = "App Name",
+                    text = "Password Manager",
                     fontSize = 20.sp,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )

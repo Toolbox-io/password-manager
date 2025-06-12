@@ -9,9 +9,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import io.toolbox.passwdmanager.data.PasswordStorage
+import io.toolbox.passwdmanager.ui.screens.AboutScreen
+import io.toolbox.passwdmanager.ui.screens.MainScreen
+import io.toolbox.passwdmanager.ui.screens.PasswordDetailsScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 val LocalNavController: ProvidableCompositionLocal<NavController> = compositionLocalOf { error("") }
@@ -31,6 +37,14 @@ fun App() {
             ) {
                 composable("main") { MainScreen() }
                 composable("about") { AboutScreen() }
+                composable(
+                    route = "password/{index}",
+                    arguments = listOf(
+                        navArgument("index") { type = NavType.IntType }
+                    )
+                ) { backStackEntry ->
+                    PasswordDetailsScreen(PasswordStorage.passwords[backStackEntry.arguments!!.getInt("index")])
+                }
             }
         }
     }

@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package io.toolbox.passwdmanager.ui
+package io.toolbox.passwdmanager.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
@@ -38,6 +38,7 @@ import com.pr0gramm3r101.utils.right
 import io.toolbox.passwdmanager.Res
 import io.toolbox.passwdmanager.home
 import io.toolbox.passwdmanager.settings
+import io.toolbox.passwdmanager.ui.LocalWindowInsetsScope
 import io.toolbox.passwdmanager.ui.tabs.HomeTab
 import io.toolbox.passwdmanager.ui.tabs.SettingsTab
 import kotlinx.coroutines.launch

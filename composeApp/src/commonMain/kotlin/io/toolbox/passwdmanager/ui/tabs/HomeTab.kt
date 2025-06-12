@@ -6,18 +6,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,10 +28,12 @@ import com.pr0gramm3r101.components.Category
 import com.pr0gramm3r101.components.CategoryDefaults
 import com.pr0gramm3r101.components.ListItem
 import com.pr0gramm3r101.utils.copy
+import com.pr0gramm3r101.utils.invoke
 import io.toolbox.passwdmanager.Res
 import io.toolbox.passwdmanager.data.PasswordEntry
 import io.toolbox.passwdmanager.data.PasswordStorage
 import io.toolbox.passwdmanager.home
+import io.toolbox.passwdmanager.ui.LocalNavController
 import io.toolbox.passwdmanager.ui.components.AddPasswordDialog
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -47,14 +46,11 @@ fun HomeTab() {
     TabBase {
         val scrollBehavior =
             TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+        val navController = LocalNavController()
 
         var showDialog by remember { mutableStateOf(false) }
-        var passwords by remember { mutableStateOf<List<PasswordEntry>>(emptyList()) }
+        var passwords = PasswordStorage.passwords
         val scope = rememberCoroutineScope()
-
-        LaunchedEffect(Unit) {
-            passwords = PasswordStorage.loadPasswords()
-        }
 
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -88,18 +84,9 @@ fun HomeTab() {
                     Category(padding = CategoryDefaults.padding.copy(vertical = 5.dp)) {
                         ListItem(
                             headline = entry.login.ifEmpty { "No login" },
-                            supportingText = entry.password,
-                            trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        scope.launch {
-                                            PasswordStorage.deletePassword(entry)
-                                            passwords = PasswordStorage.loadPasswords()
-                                        }
-                                    }
-                                ) {
-                                    Icon(Icons.Filled.Delete, contentDescription = "Delete")
-                                }
+                            supportingText = entry.password.replace(".".toRegex(), "*"),
+                            onClick = {
+                                navController.navigate("password/${passwords.indexOf(entry)}")
                             }
                         )
                     }
@@ -114,8 +101,7 @@ fun HomeTab() {
                         onDismissRequest = { showDialog = false },
                         onAddPassword = { login, password ->
                             scope.launch {
-                                PasswordStorage.savePassword(PasswordEntry(login, password))
-                                passwords = PasswordStorage.loadPasswords()
+                                PasswordStorage.add(PasswordEntry(login, password))
                                 showDialog = false
                             }
                         }
