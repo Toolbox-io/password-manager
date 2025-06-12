@@ -42,7 +42,7 @@ jobs:
         echo "storePassword=$STORE_PASSWORD" > keys/keystore.properties
         echo "keyPassword=$KEY_PASSWORD" >> keys/keystore.properties
     - name: Build with Gradle
-      run: ./gradlew assembleRelease
+      run: ./gradlew assembleRelease --no-daemon
     - name: Upload artifact
       uses: actions/upload-artifact@v4.6.2
       with:
@@ -71,7 +71,7 @@ jobs:
           echo "storePassword=$STORE_PASSWORD" > keys/keystore.properties
           echo "keyPassword=$KEY_PASSWORD" >> keys/keystore.properties
       - name: Build with Gradle
-        run: ./gradlew createReleaseDistributable
+        run: ./gradlew createReleaseDistributable --no-daemon
       - name: Upload artifact
         uses: actions/upload-artifact@v4.6.2
         with:
@@ -100,7 +100,7 @@ jobs:
           echo "storePassword=$STORE_PASSWORD" > keys/keystore.properties
           echo "keyPassword=$KEY_PASSWORD" >> keys/keystore.properties
       - name: Build with Gradle
-        run: ./gradlew createReleaseDistributable
+        run: ./gradlew createReleaseDistributable --no-daemon
       - name: Upload artifact
         uses: actions/upload-artifact@v4.6.2
         with:
@@ -131,8 +131,6 @@ jobs:
       - name: Build with Gradle
         shell: pwsh
         run: ./gradlew.bat createReleaseDistributable --no-daemon
-      - name: Stop Gradle Daemon
-        run: ./gradlew.bat --stop
       - name: Upload artifact
         uses: actions/upload-artifact@v4.6.2
         with:
