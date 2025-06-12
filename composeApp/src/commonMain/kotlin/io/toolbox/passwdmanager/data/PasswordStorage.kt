@@ -87,4 +87,34 @@ object PasswordStorage {
             throw RuntimeException("Failed to delete password", e)
         }
     }
+
+    suspend fun edit(index: Int, newEntry: PasswordEntry) {
+        try {
+            val currentStore = try {
+                json.decodeFromString<PasswordStore>(storageFile.readText())
+            } catch (_: FileNotFoundException) {
+                throw RuntimeException("Cannot edit non-existent entry")
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                throw RuntimeException("Failed to load passwords for editing")
+            }
+            
+            // Verify the index is valid
+            if (index < 0 || index >= currentStore.entries.size) {
+                throw IndexOutOfBoundsException("Invalid entry index: $index")
+            }
+            
+            val updatedStore = currentStore.copy(
+                entries = currentStore.entries.toMutableList().apply {
+                    this[index] = newEntry
+                }
+            )
+            
+            storageFile.writeText(json.encodeToString(serializer<PasswordStore>(), updatedStore))
+            update()
+        } catch (e: Exception) {
+            throw RuntimeException("Failed to edit password", e)
+        }
+    }
 } 

@@ -21,7 +21,6 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -41,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.pr0gramm3r101.components.Button
 import com.pr0gramm3r101.utils.AnimatedCrosslineIcon
-import com.pr0gramm3r101.utils.PasswordUtils
 import com.pr0gramm3r101.utils.TweakedOutlinedTextField
 import com.pr0gramm3r101.utils.clearsFocus
 import com.pr0gramm3r101.utils.verticalScroll
@@ -49,6 +47,7 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import io.toolbox.passwdmanager.Res
 import io.toolbox.passwdmanager.hidepw
 import io.toolbox.passwdmanager.showpw
+import io.toolbox.passwdmanager.utils.PasswordUtils
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
@@ -94,7 +93,7 @@ fun AddPasswordDialog(
                 var password by remember { mutableStateOf("") }
                 var passwordShown by remember { mutableStateOf(false) }
 
-                OutlinedTextField(
+                TweakedOutlinedTextField(
                     value = login,
                     onValueChange = { login = it },
                     label = { Text("Login (optional)") },
@@ -136,7 +135,7 @@ fun AddPasswordDialog(
                 ) {
                     Button(
                         onClick = {
-                            password = PasswordUtils.improvePassword(password)
+                            password = PasswordUtils.improve(password)
                         },
                         icon = {
                             Icon(Icons.Filled.AutoFixHigh, null)

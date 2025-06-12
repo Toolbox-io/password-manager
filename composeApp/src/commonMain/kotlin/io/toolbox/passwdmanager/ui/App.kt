@@ -44,11 +44,8 @@ fun App() {
                         navArgument("index") { type = NavType.IntType }
                     )
                 ) { backStackEntry ->
-                    PasswordDetailsScreen(
-                        PasswordStorage.passwords[
-                            backStackEntry.arguments!!.read { getInt("index") }
-                        ]
-                    )
+                    val index = backStackEntry.arguments!!.read { getInt("index") }
+                    PasswordDetailsScreen(PasswordStorage.passwords[index], index)
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.pr0gramm3r101.utils
+package io.toolbox.passwdmanager.utils
 
 import kotlin.random.Random
 
@@ -21,19 +21,17 @@ object PasswordUtils {
     private val SPECIAL_CHARS = listOf("!", "@", "#", "$", "%", "&", "*", "+", "=")
     private val NUMBER_PATTERNS = listOf("123", "456", "789", "2023", "2024", "99", "88", "77")
 
-    fun generateStrongPassword(length: Int = 16): String {
-        return buildMemorablePassword()
-    }
+    fun generateStrongPassword() = buildMemorablePassword()
 
-    fun improvePassword(password: String): String {
+    fun improve(password: String): String {
         if (password.isEmpty()) return generateStrongPassword()
-        
+
         val random = Random.Default
         val improved = StringBuilder(password)
-        
+
         // Remove spaces if any
         if (improved.contains(" ")) {
-            improved.replace(0, improved.length, improved.toString().replace(" ", ""))
+            improved.replace(" ".toRegex(), "")
         }
 
         // Add missing character types in a way that preserves the original password
@@ -42,13 +40,13 @@ object PasswordUtils {
             val pos = random.nextInt(improved.length + 1)
             improved.insert(pos, UPPERCASE[random.nextInt(UPPERCASE.length)])
         }
-        
+
         if (!password.any { it.isDigit() }) {
             // Add a number at a random position
             val pos = random.nextInt(improved.length + 1)
             improved.insert(pos, NUMBERS[random.nextInt(NUMBERS.length)])
         }
-        
+
         if (!password.any { it in SPECIAL }) {
             // Add a special character at a random position
             val pos = random.nextInt(improved.length + 1)
@@ -92,7 +90,7 @@ object PasswordUtils {
     private fun buildMemorablePassword(): String {
         val random = Random.Default
         val pattern = random.nextInt(3) // Choose one of three patterns
-        
+
         return when (pattern) {
             0 -> {
                 // Pattern: Adjective + Noun + Number + Special
@@ -120,4 +118,4 @@ object PasswordUtils {
             }
         }
     }
-} 
+}

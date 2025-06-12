@@ -43,8 +43,8 @@ import io.toolbox.passwdmanager.utils.PasswordStrength
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun PasswordStrengthMeter(
-    password: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    password: String
 ) {
     val strengthResult = remember(password) {
         PasswordStrength.calculateStrength(password)
