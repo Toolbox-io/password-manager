@@ -43,7 +43,7 @@ jobs:
         echo "keyPassword=$KEY_PASSWORD" >> keys/keystore.properties
     - name: Build with Gradle
       run: ./gradlew assembleRelease
-    - name: Upload Android artifact
+    - name: Upload artifact
       uses: actions/upload-artifact@v4.6.2
       with:
         name: Android
@@ -72,7 +72,7 @@ jobs:
           echo "keyPassword=$KEY_PASSWORD" >> keys/keystore.properties
       - name: Build with Gradle
         run: ./gradlew createReleaseDistributable
-      - name: Upload Linux artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4.6.2
         with:
           name: Linux
@@ -101,7 +101,7 @@ jobs:
           echo "keyPassword=$KEY_PASSWORD" >> keys/keystore.properties
       - name: Build with Gradle
         run: ./gradlew createReleaseDistributable
-      - name: Upload macOS artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4.6.2
         with:
           name: macOS
@@ -133,7 +133,7 @@ jobs:
         run: ./gradlew.bat createReleaseDistributable --no-daemon
       - name: Stop Gradle Daemon
         run: ./gradlew.bat --stop
-      - name: Upload Windows artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4.6.2
         with:
           name: Windows
