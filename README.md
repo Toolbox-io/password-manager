@@ -1,4 +1,6 @@
 # password-manager
+[![Build](https://github.com/Toolbox-io/password-manager/actions/workflows/build.yml/badge.svg)](https://github.com/Toolbox-io/password-manager/actions/workflows/build.yml)
+
 Менеджер паролей Toolbox.io
 
 ## Info
