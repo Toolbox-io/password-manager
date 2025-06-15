@@ -22,7 +22,7 @@ on:
       force_build:
         description: "Force build"
         required: false
-        default: 'false'
+        default: 'true'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
